@@ -1,0 +1,6 @@
+{
+  "name": "Muzeycha",
+  "description": "Rasm va videolaringizdan kichkina 3D muzey yasaydi. Ichida yurib, suratlarni devordagi ramkalarda tomosha qilasiz.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

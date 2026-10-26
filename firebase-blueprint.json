@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Museum": {
+      "title": "Museum",
+      "description": "3D virtual museum containing photos and videos",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique museum ID",
+          "maxLength": 64
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation",
+          "maxLength": 64
+        },
+        "roomType": {
+          "type": "string",
+          "description": "Generated museum hall layout",
+          "enum": ["single", "hall", "l_shaped"]
+        },
+        "itemCount": {
+          "type": "number",
+          "description": "Total number of media items"
+        },
+        "items": {
+          "type": "array",
+          "description": "Media exhibits in the museum"
+        }
+      },
+      "required": ["id", "createdAt", "roomType", "itemCount", "items"]
+    }
+  },
+  "firestore": {
+    "/museums/{museumId}": {
+      "schema": "Museum",
+      "description": "Publicly viewable 3D museums created by users"
+    }
+  }
+}

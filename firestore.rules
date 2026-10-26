@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 32 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidMuseum(data) {
+      return data.keys().hasAll(['id', 'createdAt', 'roomType', 'itemCount', 'items'])
+        && data.keys().hasOnly(['id', 'createdAt', 'roomType', 'itemCount', 'items'])
+        && data.id is string && data.id.size() <= 32
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && data.roomType in ['single', 'hall', 'l_shaped']
+        && data.itemCount is number && data.itemCount >= 1 && data.itemCount <= 30
+        && data.items is list && data.items.size() >= 1 && data.items.size() <= 30;
+    }
+
+    match /museums/{museumId} {
+      // Public read: anyone can view a museum via shared link
+      allow get: if isValidId(museumId);
+      // No listing/scraping all museums
+      allow list: if false;
+      // Creation allowed with strict schema verification
+      allow create: if isValidId(museumId) && incoming().id == museumId && isValidMuseum(incoming());
+      // Museums are immutable once created
+      allow update, delete: if false;
+    }
+  }
+}
